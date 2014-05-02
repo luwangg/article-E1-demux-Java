@@ -1,4 +1,4 @@
-/**  E1 demultiplexer, revision 4
+/**  E1 demultiplexer, revision 5
   *  Created reference implementation
   *  Added test and measurement code
   *  Added correctness test
@@ -6,6 +6,7 @@
   *  Started source-first family of solutions:
   *    Added Src_First_1: Reference with refactored inner loop
   *    Added Src_First_2: Multiplication in the inner loop
+  *    Fixed a bug in Src_First_2: double increment of an outer loop variable
   */
 
 import java.util.Random;
@@ -117,7 +118,6 @@ public final class E1
                 for (int dst_num = 0; dst_num < NUM_TIMESLOTS; ++ dst_num) {
                     dst [dst_num][dst_pos] = src [dst_pos * NUM_TIMESLOTS + dst_num];
                 }
-                ++ dst_pos;
             }
         }
     }
