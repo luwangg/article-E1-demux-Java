@@ -1,4 +1,4 @@
-/**  E1 demultiplexer, revision 7
+/**  E1 demultiplexer, revision 8
   *  Created reference implementation
   *  Added test and measurement code
   *  Added correctness test
@@ -11,6 +11,7 @@
   *
   *  Started destination-first family of solutions:
   *    Added Dst_First_1: Similar to Src_First_2 but different order of loops
+  *    Added Dst_First_2: Dst_First_1 manually optimised
   */
 
 import java.util.Random;
@@ -152,12 +153,31 @@ public final class E1
         }
     }
 
+    static final class Dst_First_2 implements Demux
+    {
+        public void demux (byte[] src, byte[][] dst)
+        {
+            assert src.length % NUM_TIMESLOTS == 0;
+
+            int dst_size = src.length / NUM_TIMESLOTS;
+            for (int dst_num = 0; dst_num < NUM_TIMESLOTS; ++ dst_num) {
+                byte [] d = dst [dst_num];
+                int src_pos = dst_num;
+                for (int dst_pos = 0; dst_pos < dst_size; ++ dst_pos) {
+                    d[dst_pos] = src[src_pos];
+                    src_pos += NUM_TIMESLOTS;
+                }
+            }
+        }
+    }
+
     public static void main (String [] args) 
     {
 //      measure (new Reference ());
 //      measure (new Src_First_1 ());
 //      measure (new Src_First_2 ());
 //      measure (new Src_First_3 ());
-        measure (new Dst_First_1 ());
+//      measure (new Dst_First_1 ());
+        measure (new Dst_First_2 ());
     }
 }
