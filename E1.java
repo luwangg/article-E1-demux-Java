@@ -1,9 +1,14 @@
-/**  E1 demultiplexer, revision 2
+/**  E1 demultiplexer, revision 3
   *  Created reference implementation
   *  Added test and measurement code
+  *  Added correctness test
+  *
+  *  Started source-first family of solutions:
+  *    Added Src_First_1: Reference with refactored inner loop
   */
 
 import java.util.Random;
+import java.util.Arrays;
 
 public final class E1
 {
@@ -32,8 +37,24 @@ public final class E1
         return new byte [NUM_TIMESLOTS][DST_SIZE];
     }
 
+    static void check (Demux demux)
+    {
+        byte[] src = generate ();
+        byte[][] dst0 = allocate_dst ();
+        byte[][] dst = allocate_dst ();
+        new Reference ().demux (src, dst0);
+        demux.demux (src, dst);
+        for (int i = 0; i < NUM_TIMESLOTS; i++) {
+            if (! Arrays.equals (dst0[i], dst[i])) {
+                throw new java.lang.RuntimeException ("Results not equal");
+            }
+        }
+    }
+
     static void measure (Demux demux)
     {
+        check (demux);
+
         byte[] src = generate ();
         byte[][] dst = allocate_dst ();
 
@@ -68,8 +89,26 @@ public final class E1
         }
     }
 
+    static final class Src_First_1 implements Demux
+    {
+        public void demux (byte[] src, byte[][] dst)
+        {
+            assert src.length % NUM_TIMESLOTS == 0;
+
+            int src_pos = 0;
+            int dst_pos = 0;
+            while (src_pos < src.length) {
+                for (int dst_num = 0; dst_num < NUM_TIMESLOTS; ++ dst_num) {
+                    dst [dst_num][dst_pos] = src [src_pos ++];
+                }
+                ++ dst_pos;
+            }
+        }
+    }
+
     public static void main (String [] args) 
     {
-        measure (new Reference ());
+//      measure (new Reference ());
+        measure (new Src_First_1 ());
     }
 }
