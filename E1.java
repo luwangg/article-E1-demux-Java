@@ -1,4 +1,4 @@
-/**  E1 demultiplexer, revision 12
+/**  E1 demultiplexer, revision 13
   *  Created reference implementation
   *  Added test and measurement code
   *  Added correctness test
@@ -18,6 +18,7 @@
   *    Added Unrolled_1:      Inner loop unrolled fully
   *    Added Unrolled_2_Full: Both loops unrolled in one huge method
   *    Added Unrolled_3:      Both loops unrolled; each iteration of the outer loop made into separate method
+  *    Added Unrolled_4:      Both loops unrolled; all methods from Unrolled_3 merged into one using parameters
   */
 
 import java.util.Random;
@@ -1461,6 +1462,69 @@ public final class E1
         }       
     }
 
+    static final class Unrolled_4 implements Demux
+    {
+        public void demux (byte[] src, byte[][] dst)
+        {
+            assert NUM_TIMESLOTS == 32;
+            assert DST_SIZE == 64;
+            assert src.length == NUM_TIMESLOTS * DST_SIZE;
+            
+            demux_0 (src, dst[ 0],  0);
+            demux_0 (src, dst[ 1],  1);
+            demux_0 (src, dst[ 2],  2);
+            demux_0 (src, dst[ 3],  3);
+            demux_0 (src, dst[ 4],  4);
+            demux_0 (src, dst[ 5],  5);
+            demux_0 (src, dst[ 6],  6);
+            demux_0 (src, dst[ 7],  7);
+            demux_0 (src, dst[ 8],  8);
+            demux_0 (src, dst[ 9],  9);
+            demux_0 (src, dst[10], 10);
+            demux_0 (src, dst[11], 11);
+            demux_0 (src, dst[12], 12);
+            demux_0 (src, dst[13], 13);
+            demux_0 (src, dst[14], 14);
+            demux_0 (src, dst[15], 15);
+            demux_0 (src, dst[16], 16);
+            demux_0 (src, dst[17], 17);
+            demux_0 (src, dst[18], 18);
+            demux_0 (src, dst[19], 19);
+            demux_0 (src, dst[20], 20);
+            demux_0 (src, dst[21], 21);
+            demux_0 (src, dst[22], 22);
+            demux_0 (src, dst[23], 23);
+            demux_0 (src, dst[24], 24);
+            demux_0 (src, dst[25], 25);
+            demux_0 (src, dst[26], 26);
+            demux_0 (src, dst[27], 27);
+            demux_0 (src, dst[28], 28);
+            demux_0 (src, dst[29], 29);
+            demux_0 (src, dst[30], 30);
+            demux_0 (src, dst[31], 31);
+        }
+
+        private static void demux_0 (byte[] src, byte[] d, int i)
+        {
+            d[ 0] = src[   0+i]; d[ 1] = src[  32+i]; d[ 2] = src[  64+i]; d[ 3] = src[  96+i];
+            d[ 4] = src[ 128+i]; d[ 5] = src[ 160+i]; d[ 6] = src[ 192+i]; d[ 7] = src[ 224+i];
+            d[ 8] = src[ 256+i]; d[ 9] = src[ 288+i]; d[10] = src[ 320+i]; d[11] = src[ 352+i];
+            d[12] = src[ 384+i]; d[13] = src[ 416+i]; d[14] = src[ 448+i]; d[15] = src[ 480+i];
+            d[16] = src[ 512+i]; d[17] = src[ 544+i]; d[18] = src[ 576+i]; d[19] = src[ 608+i];
+            d[20] = src[ 640+i]; d[21] = src[ 672+i]; d[22] = src[ 704+i]; d[23] = src[ 736+i];
+            d[24] = src[ 768+i]; d[25] = src[ 800+i]; d[26] = src[ 832+i]; d[27] = src[ 864+i];
+            d[28] = src[ 896+i]; d[29] = src[ 928+i]; d[30] = src[ 960+i]; d[31] = src[ 992+i];
+            d[32] = src[1024+i]; d[33] = src[1056+i]; d[34] = src[1088+i]; d[35] = src[1120+i];
+            d[36] = src[1152+i]; d[37] = src[1184+i]; d[38] = src[1216+i]; d[39] = src[1248+i];
+            d[40] = src[1280+i]; d[41] = src[1312+i]; d[42] = src[1344+i]; d[43] = src[1376+i];
+            d[44] = src[1408+i]; d[45] = src[1440+i]; d[46] = src[1472+i]; d[47] = src[1504+i];
+            d[48] = src[1536+i]; d[49] = src[1568+i]; d[50] = src[1600+i]; d[51] = src[1632+i];
+            d[52] = src[1664+i]; d[53] = src[1696+i]; d[54] = src[1728+i]; d[55] = src[1760+i];
+            d[56] = src[1792+i]; d[57] = src[1824+i]; d[58] = src[1856+i]; d[59] = src[1888+i];
+            d[60] = src[1920+i]; d[61] = src[1952+i]; d[62] = src[1984+i]; d[63] = src[2016+i];
+        }
+    }
+
     public static void main (String [] args) 
     {
 //      measure (new Reference ());
@@ -1473,5 +1537,6 @@ public final class E1
 //      measure (new Unrolled_1 ());
 //      measure (new Unrolled_2_Full ());
 //      measure (new Unrolled_3 ());
+        measure (new Unrolled_4 ());
     }
 }
