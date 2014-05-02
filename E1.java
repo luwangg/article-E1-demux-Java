@@ -1,10 +1,11 @@
-/**  E1 demultiplexer, revision 3
+/**  E1 demultiplexer, revision 4
   *  Created reference implementation
   *  Added test and measurement code
   *  Added correctness test
   *
   *  Started source-first family of solutions:
   *    Added Src_First_1: Reference with refactored inner loop
+  *    Added Src_First_2: Multiplication in the inner loop
   */
 
 import java.util.Random;
@@ -106,9 +107,25 @@ public final class E1
         }
     }
 
+    static final class Src_First_2 implements Demux
+    {
+        public void demux (byte[] src, byte[][] dst)
+        {
+            assert src.length % NUM_TIMESLOTS == 0;
+            
+            for (int dst_pos = 0; dst_pos < src.length / NUM_TIMESLOTS; ++ dst_pos) {
+                for (int dst_num = 0; dst_num < NUM_TIMESLOTS; ++ dst_num) {
+                    dst [dst_num][dst_pos] = src [dst_pos * NUM_TIMESLOTS + dst_num];
+                }
+                ++ dst_pos;
+            }
+        }
+    }
+
     public static void main (String [] args) 
     {
 //      measure (new Reference ());
-        measure (new Src_First_1 ());
+//      measure (new Src_First_1 ());
+        measure (new Src_First_2 ());
     }
 }
