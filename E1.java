@@ -1,4 +1,4 @@
-/**  E1 demultiplexer, revision 6
+/**  E1 demultiplexer, revision 7
   *  Created reference implementation
   *  Added test and measurement code
   *  Added correctness test
@@ -8,6 +8,9 @@
   *    Added Src_First_2: Multiplication in the inner loop
   *    Fixed a bug in Src_First_2: double increment of an outer loop variable
   *    Added Src_First_3: Loop along source with division and modulo operations
+  *
+  *  Started destination-first family of solutions:
+  *    Added Dst_First_1: Similar to Src_First_2 but different order of loops
   */
 
 import java.util.Random;
@@ -135,11 +138,26 @@ public final class E1
         }
     }
 
+    static final class Dst_First_1 implements Demux
+    {
+        public void demux (byte[] src, byte[][] dst)
+        {
+            assert src.length % NUM_TIMESLOTS == 0;
+
+            for (int dst_num = 0; dst_num < NUM_TIMESLOTS; ++ dst_num) {
+                for (int dst_pos = 0; dst_pos < src.length / NUM_TIMESLOTS; ++ dst_pos) {
+                    dst [dst_num][dst_pos] = src [dst_pos * NUM_TIMESLOTS + dst_num];
+                }
+            }
+        }
+    }
+
     public static void main (String [] args) 
     {
 //      measure (new Reference ());
 //      measure (new Src_First_1 ());
 //      measure (new Src_First_2 ());
-        measure (new Src_First_3 ());
+//      measure (new Src_First_3 ());
+        measure (new Dst_First_1 ());
     }
 }
